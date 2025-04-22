@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΒΑΘΜΟΛΟΓΙΑ & ΑΠΑΝΤΗΣΕΙΣ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">Βαθμολογία & Απαντήσεις</div>
+            <div class="nav-links">
+                <a href="#" id="logoutButton" class="btn">Αποσύνδεση</a>
+            </div>
+        </div>
+
+        <section class="purpose">
+            <h1>Ανά Ερωτηματολόγιο</h1>
+            <ul id="individualScores" style="list-style: none; padding-left: 0;"></ul>
+            
+            <h1>Τελικό Σκορ</h1>  
+            <p id="totalScore"></p>
+        
+            <h2>Πίνακας Αποτελεσμάτων</h2>
+            <table border="1" cellspacing="0" cellpadding="8" style="width: 100%; border-collapse: collapse; text-align: center;">
+                <thead style="background-color: #f2f2f2;">
+                    <tr>
+                        <th>Κατηγορία</th>
+                        <th>Χαμηλό Επίπεδο Ωριμότητας</th>
+                        <th>Μέτριο Επίπεδο Ωριμότητας</th>
+                        <th>Υψηλό Επίπεδο Ωριμότητας</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #f2f2f2;">
+                    <tr>
+                        <td>Ανθρωποκεντρικότητα</td>
+                        <td> 9 - 20</td>
+                        <td>21 - 32</td>
+                        <td>33 - 45</td>
+                    </tr>
+                    <tr>
+                        <td>Κλινική Αποτελεσματικότητα</td>
+                        <td> 4 - 9</td>
+                        <td>10 - 15</td>
+                        <td>16 - 20</td>
+                    </tr>
+                    <tr>
+                        <td>Ασφάλεια - Απόρρητο</td>
+                        <td> 3 - 7</td>
+                        <td> 8 - 11</td>
+                        <td>12 - 15</td>
+                    </tr>
+
+                    <tr>
+                        <td><b>ΣΥΝΟΛΙΚΑ</b></td>
+                        <td><b>16 - 36</b></td>
+                        <td><b>37 - 59</b></td>
+                        <td><b>60 - 80</b></td>
+                    </tr>                
+                </tbody>
+            </table>
+        </section>
+
+        <section class="purpose">
+            <h2>Αναλυτικές Απαντήσεις</h2>
+            <div id="answersDisplay"></div>
+            <div class="export-buttons">
+                <button onclick="exportToCSV()">Εξαγωγή σε CSV</button>
+                <button onclick="exportToPDF()">Εξαγωγή σε PDF</button>
+                <button onclick="exportToTXT()">Εξαγωγή σε TXT</button>
+
+            </div>
+        </section>
+        <div id="repeatPrompt" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background-color: #f9f9f9; padding: 20px; border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.2); text-align: center;">
+            <p>Θέλετε να απαντήσετε ξανά το ερωτηματολόγιο για άλλη υπηρεσία;</p>
+            <button onclick="repeatQuestionnaire()">Ναι</button>
+            <button onclick="document.getElementById('repeatPrompt').style.display='none'">Όχι</button>
+            </div>
+        </div>
+    </div>
+
+  <script>
+        window.onload = function() {
+            const users = JSON.parse(localStorage.getItem("users")) || [];
+            const currentUsername = localStorage.getItem("currentUser"); // το ίδιο όνομα με repeatQuestionnaire
+            const currentUser = users.find(user => user.username === currentUsername);
+
+
+            let serviceName = "Άγνωστη Υπηρεσία";
+            if (currentUser && currentUser.serviceName && currentUser.serviceName.trim() !== "") {
+                serviceName = currentUser.serviceName.trim();
+            }
+
+
+            const titleElement = document.createElement("h2");
+            titleElement.textContent = `Αποτελέσματα για: ${serviceName}`;
+            document.querySelector(".purpose").prepend(titleElement);
+            
+            const score1 = parseInt(localStorage.getItem('score1')) || 0;
+            const score2 = parseInt(localStorage.getItem('score2')) || 0;
+            const score3 = parseInt(localStorage.getItem('score3')) || 0;
+
+            const totalScore = score1 + score2 + score3;
+        // Συνάρτηση για τον καθορισμό επιπέδου και χρώματος
+        function getLevel(score, ranges) {
+            if (score <= ranges.lowMax) {
+                return { label: "Χαμηλό", color: "#FF4C4C" };
+            } else if (score <= ranges.mediumMax) {
+                return { label: "Μέτριο", color: "#FF8C00" };
+            } else {
+                return { label: "Υψηλό", color: "#32CD32" };
+            }
+        }
+        const level1 = getLevel(score1, { lowMax: 20, mediumMax: 32 });
+        const level2 = getLevel(score2, { lowMax: 9, mediumMax: 15 });
+        const level3 = getLevel(score3, { lowMax: 7, mediumMax: 11 });
+        const totalLevel = getLevel(totalScore, { lowMax: 36, mediumMax: 59 });
+
+        individualScores.innerHTML = `
+            <b>Ανθρωποκεντρικότητα: <span style="color: ${level1.color}; font-weight: bold;">
+                ${score1} (${level1.label})
+            </span></b><br>
+            <b>Κλινική Αποτελεσματικότητα: <span style="color: ${level2.color}; font-weight: bold;">
+                ${score2} (${level2.label})
+            </span></b><br>
+            <b>Ασφάλεια - Απόρρητο: <span style="color: ${level3.color}; font-weight: bold;">
+                ${score3} (${level3.label})
+            </span></b>
+        `;
+
+        //document.getElementById('totalScore').innerText = `Το συνολικό σκορ σας είναι: ${totalScore} (${totalLevel.label})`;
+        document.getElementById('totalScore').innerHTML = `
+            <b> Το συνολικό σκορ σας είναι: <span style="color: ${totalLevel.color}; font-weight: bold;">
+                ${totalScore} (${totalLevel.label})
+            </span></b> 
+        `;
+
+            // Εμφάνιση των αναλυτικών απαντήσεων
+            const answersDisplay = document.getElementById('answersDisplay');
+            let allAnswersHTML = '';
+            
+            for (let i = 1; i <= 3; i++) {
+                const answers = JSON.parse(localStorage.getItem(`answers${i}`)) || [];
+                const questionsText = JSON.parse(localStorage.getItem(`questionsText${i}`)) || [];
+               
+                allAnswersHTML += `<h3>Ερωτηματολόγιο ${i}</h3><ul>`;
+                answers.forEach((answer,index) => {
+                    allAnswersHTML += `<li><strong>Ερώτηση:</strong> ${questionsText[index]}<br><strong>Απάντηση:</strong> ${answer}</li>`;
+                });
+                allAnswersHTML += '</ul>';
+            }
+
+            answersDisplay.innerHTML = allAnswersHTML;
+        };
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
