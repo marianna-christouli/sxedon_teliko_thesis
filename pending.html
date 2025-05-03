@@ -3,40 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Εγγραφή - Εκκρεμής Εγκεκριμένη ή Απορριφθείσα</title>
+    <title>ΚΑΤΑΣΤΑΣΗ ΕΓΓΡΑΦΗΣ: ΥΠΟ ΕΠΕΞΕΡΓΑΣΙΑ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- Navbar  -->
     <nav class="navbar">
-        <div class="logo">.....</div>
+        <h1 class="logo"></h1>
         <div class="nav-links">
             <a href="index.html" class="btn">Αρχική</a>
             <a href="login.html" class="btn">Σύνδεση</a>
         </div>
     </nav>
+   
 
     <!-- Container -->
     <div class="container">
         <div class="hero">
-            <h2>Η εγγραφή σας είναι υπό έγκριση</h2>
-            <p>Αναμονή για την έγκριση ή την απόρριψη από τον διαχειριστή.</p>
+            <h2>Η εγγραφή σας βρίσκεται στο στάδιο επεξεργασίας.</h2>          
         </div>
 
-        <div class="purpose">
-            <h3>Πληροφορίες</h3>
-            <p>Η εγγραφή σας είναι υπό έγκριση. Όταν εγκριθεί ή απορριφθεί, θα ενημερωθείτε μέσω ειδοποίησης. Παρακαλούμε να είστε υπομονετικοί.</p>
-        </div>
-
-        <div class="form-container">
-            <h2>Ενημέρωση</h2>
-            <p>Αν έχετε ερωτήσεις ή ανησυχίες, παρακαλούμε επικοινωνήστε με τον διαχειριστή.</p>
-            <p class="switch-page left">
-            Θα βρείτε την φόρμα επικοινωνίας  <a href="register.html">εδώ</a>.
+        <div class="purpose" align="center">
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Η διαδικασία είναι σε εξέλιξη. Παρακαλούμε περιμένετε στην σελίδα.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>  
+            <p>Θα λάβετε ειδοποίηση μόλις ολοκληρωθεί η διαδικασία έγκρισης ή απόρριψης.</p>
+            
+        </div>   
+        
+        <div class="purpose" align="center">
+            <p>Εάν έχετε απορίες ή χρειάζεστε διευκρινίσεις, μπορείτε να επικοινωνήσετε μαζί μας.</p>
+            <p class="switch-page">
+             Bρείτε τη φόρμα επικοινωνίας <a href="com.html">εδώ</a>.
             </p>
         </div>
+
+        <div class="hero">
+            <h4>Σας ευχαριστούμε για την υπομονή σας.</h4>          
+        </div>
     </div>
-    <p id="confirmationMessage" style="display:none; color:green; font-weight:bold; margin-top:10px;"></p>
+        <p id="confirmationMessage" style="display:none; color:green; font-weight:bold; margin-top:10px;"></p>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             if (!window.location.href.includes("pending.html")) return;
@@ -57,17 +61,17 @@
 
             switch (currentUserObject.status) {
                 case "Σε αναμονή":
-                    messageToShow = "Η αίτησή σας είναι σε αναμονή έγκρισης.";
+                    messageToShow = "Κατάσταση Εγγραφής: Σε Αναμονή";
                     setTimeout(() => {
                         location.reload();
                     }, 1000);
                     break;
                 case "Εγκρίθηκε":
-                    messageToShow = "Η εγγραφή σας εγκρίθηκε από τον διαχειριστή!";
+                    messageToShow = "Η εγγραφή σας εγκρίθηκε!";
                     redirectUrl = "login.html";
                     break;
                 case "Απορρίφθηκε":
-                    messageToShow = "Η εγγραφή σας απορρίφθηκε από τον διαχειριστή!";
+                    messageToShow = "Η εγγραφή σας απορρίφθηκε!";
                     showRejectionOptions = true;
                     break;
                 default:

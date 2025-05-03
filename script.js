@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const user = {
                     username: document.getElementById('username').value.trim(),
                     email: document.getElementById('email').value.trim(),
-                    password: document.getElementById('password').value.trim(), // Αν θέλετε να αποθηκεύσετε και τον κωδικό
+                    password: document.getElementById('password').value.trim(), 
                     //password: btoa(document.getElementById('password').value.trim()),
                     gender: document.getElementById('gender').value,
                     age: document.getElementById('age').value,
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Αποθήκευση του τρέχοντος χρήστη στο localStorage
                 localStorage.setItem("currentUser", user.username);
                 
-                alert("Η εγγραφή σας καταχωρήθηκε! Περιμένετε έγκριση από τον διαχειριστή.");
+                //alert("Η εγγραφή σας καταχωρήθηκε! Περιμένετε έγκριση από τον διαχειριστή.");
                 registerForm.reset();
             }
         });
