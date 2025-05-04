@@ -97,7 +97,7 @@ body {
 .hero h2 {
     font-size: 28px;
     color: var(--dark-blue);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     transition: color var(--transition);
 }
 
@@ -467,7 +467,7 @@ form {
 .question {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Διαχωρισμός μεταξύ των ερωτήσεων */
+    gap: auto; /* Διαχωρισμός μεταξύ των ερωτήσεων */
 }
 
 .question label {

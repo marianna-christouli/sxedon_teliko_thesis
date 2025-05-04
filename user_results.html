@@ -22,7 +22,7 @@
             <h1>Ανά Ερωτηματολόγιο</h1>
             <ul id="individualScores" style="list-style: none; padding-left: 0;"></ul>
             
-            <h1>Τελικό Σκορ</h1>  
+            <h1>Συνολική Βαθμολογία</h1>  
             <p id="totalScore"></p>
         
             <h2>Πίνακας Αποτελεσμάτων</h2>
@@ -87,6 +87,13 @@
 
   <script>
         window.onload = function() {
+            setTimeout(function() {
+                const promptDiv = document.getElementById('repeatPrompt');
+                if (promptDiv) {
+                    promptDiv.style.display = 'block';
+                }
+            }, 3000);
+
             const users = JSON.parse(localStorage.getItem("users")) || [];
             const currentUsername = localStorage.getItem("currentUser"); // το ίδιο όνομα με repeatQuestionnaire
             const currentUser = users.find(user => user.username === currentUsername);
@@ -157,6 +164,8 @@
             }
 
             answersDisplay.innerHTML = allAnswersHTML;
+
+
         };
     </script>
     <script src="script.js"></script>
