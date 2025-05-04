@@ -8,6 +8,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const contactForm = document.getElementById("contactForm");   
     let currentUser = localStorage.getItem("currentUser");
 
+    document.addEventListener('keydown', function(event) {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'I') {
+          event.preventDefault();
+        }
+        if (event.key === 'F12') {
+          event.preventDefault();
+        }
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'C') {
+          event.preventDefault();
+        }
+      });
+  
+      document.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+      });
+
     // Προκαθορισμένος Admin
     const adminUsername = "admin";
     const adminPassword = "Admin123!";
@@ -479,110 +495,50 @@ document.addEventListener("DOMContentLoaded", function () {
         link.download = 'results.txt';
         link.click();
     }   
+
     window.exportToCSV = exportToCSV;
     window.exportToPDF = exportToPDF;
     window.exportToTXT = exportToTXT;
-/*
+
     function repeatQuestionnaire() {
-        // Φορτώνουμε τους χρήστες από το localStorage
         const users = JSON.parse(localStorage.getItem("users")) || [];
-    
-        // Ανάκτηση του username από το localStorage (δηλαδή το σύμβολο του τρέχοντος χρήστη)
         const username = localStorage.getItem("currentUser");
-    
+        
         if (!username) {
             alert("Δεν βρέθηκαν στοιχεία χρήστη.");
             return;
         }
         
-        console.log('Username:', username);
-        
-        // Αναζητούμε τον χρήστη στο array των χρηστών
         const user = users.find(user => user.username === username);
-        
         if (!user) {
             alert("Δεν υπάρχει εγγραφή για αυτόν τον χρήστη. Παρακαλώ εγγραφείτε πρώτα.");
             return;
         }
         
-        console.log('User found:', user);
+        const newService = prompt(`Όνομα Υπηρεσίας:`, user.serviceName)?.trim();
+        const newOrganization = prompt(`Όνομα Οργανισμού:`, user.organizationName)?.trim();
         
-        // Ζήτηση νέων στοιχείων για υπηρεσία και οργανισμό
-        const newService = prompt(`Όνομα Υπηρεσίας:`, user.serviceName);
-        const newOrganization = prompt(`Όνομα Οργανισμού:`, user.organizationName);
-
-        // Έλεγχος αν ο χρήστης ακύρωσε την εισαγωγή (δηλαδή αν το prompt επιστρέψει null)
-        if (newService === null || newOrganization === null) {
+        if (!newService || !newOrganization) {
             alert("Η καταχώρηση ακυρώθηκε.");
-            return; // Σταματάμε την καταχώρηση
+            return;
         }
         
-        console.log('New Service:', newService);
-        console.log('New Organization:', newOrganization);
-        
-        // Αν ο χρήστης δεν εισάγει νέα δεδομένα, κρατάμε τα παλιά
-        const service =  user.serviceName;
-        const organization =  user.organizationName;
-        
-        // Δημιουργούμε νέα εγγραφή (ιστορικό)
         const newUserEntry = {
             ...user,
-            serviceName: newService.trim(),
-            organizationName: newOrganization.trim(),
+            serviceName: newService,
+            organizationName: newOrganization,
             status: "-"
-        };  
+        };
         
-        // Αν ο χρήστης υπάρχει, δεν αλλάζουμε τίποτα. Αν δεν υπάρχει, προσθέτουμε τη νέα εγγραφή.
-        users.push(newUserEntry); // Προσθέτει την νέα εγγραφή στο τέλος του πίνακα
-
-        // Αποθηκεύουμε τον πίνακα με τους χρήστες στο localStorage
+        users.push(newUserEntry);
+        
         localStorage.setItem("users", JSON.stringify(users));
-        
         alert("Η νέα εγγραφή καταχωρήθηκε.");
+        
         setTimeout(() => {
             window.location.href = "instructions.html";
-        }, 100);        
-    }*/
-
-        function repeatQuestionnaire() {
-            const users = JSON.parse(localStorage.getItem("users")) || [];
-            const username = localStorage.getItem("currentUser");
-        
-            if (!username) {
-                alert("Δεν βρέθηκαν στοιχεία χρήστη.");
-                return;
-            }
-        
-            const user = users.find(user => user.username === username);
-            if (!user) {
-                alert("Δεν υπάρχει εγγραφή για αυτόν τον χρήστη. Παρακαλώ εγγραφείτε πρώτα.");
-                return;
-            }
-        
-            const newService = prompt(`Όνομα Υπηρεσίας:`, user.serviceName)?.trim();
-            const newOrganization = prompt(`Όνομα Οργανισμού:`, user.organizationName)?.trim();
-        
-            if (!newService || !newOrganization) {
-                alert("Η καταχώρηση ακυρώθηκε.");
-                return;
-            }
-        
-            const newUserEntry = {
-                ...user,
-                serviceName: newService,
-                organizationName: newOrganization,
-                status: "-"
-            };
-        
-            users.push(newUserEntry);
-        
-            localStorage.setItem("users", JSON.stringify(users));
-            alert("Η νέα εγγραφή καταχωρήθηκε.");
-        
-            setTimeout(() => {
-                window.location.href = "instructions.html";
-            }, 100);
-        }
+        }, 100);
+    }
             
     window.repeatQuestionnaire = repeatQuestionnaire;  
 });
